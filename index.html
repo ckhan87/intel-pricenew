@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Intel News & AI Insights</title>
+  <title>TechPulse AI Insights</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -30,6 +30,14 @@
       .custom-scrollbar::-webkit-scrollbar {
         width: 6px;
       }
+    }
+    /* Hide scrollbar for ticker tape */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
@@ -61,50 +69,60 @@
     const ListChecks = ({className}) => <SvgIcon className={className}><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></SvgIcon>;
     const ShieldAlert = ({className}) => <SvgIcon className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></SvgIcon>;
 
-    // --- Mock Data ---
-    const MOCK_NEWS = [
+    // --- Dynamic Mock Data Generator ---
+    const COMPANIES = [
+      { id: 'INTC', name: 'Intel' },
+      { id: 'NVDA', name: 'Nvidia' },
+      { id: 'AMD', name: 'AMD' },
+      { id: 'AVGO', name: 'Broadcom' },
+      { id: 'TSLA', name: 'Tesla' }
+    ];
+
+    const generateMockNews = (company) => [
       {
         id: 1,
-        title: "Intel Unveils Gaudi 3 AI Accelerator to Challenge Nvidia",
+        title: `${company.name} Unveils Next-Generation AI Architecture to Challenge Rivals`,
         date: "2026-03-12",
-        summary: "Intel has officially launched its highly anticipated Gaudi 3 AI accelerator, promising significant performance-per-dollar advantages over competitors. The new chip targets enterprise AI workloads and large language model inference.",
+        summary: `${company.name} has officially launched its highly anticipated new AI platform, promising significant performance-per-dollar advantages over competitors. The new hardware targets enterprise AI workloads and large language model inference at scale.`,
         url: "#"
       },
       {
         id: 2,
-        title: "Intel Foundry Achieves Key Milestone on 14A Process Node",
+        title: `${company.name} Achieves Key Supply Chain and Manufacturing Milestone`,
         date: "2026-03-10",
-        summary: "Marking a major step in its IDM 2.0 strategy, Intel Foundry announced early test chip success on its advanced 14A process node, utilizing High-NA EUV lithography ahead of its competitors.",
+        summary: `Marking a major step in its strategic roadmap, ${company.name} announced early success on its latest production targets, utilizing advanced manufacturing techniques to secure its position ahead of market expectations.`,
         url: "#"
       },
       {
         id: 3,
-        title: "Intel and Microsoft Expand Partnership on AI PCs",
+        title: `${company.name} Expands Cloud Infrastructure Partnership with Major Providers`,
         date: "2026-03-08",
-        summary: "A new joint initiative aims to deeply integrate Windows Copilot features directly into Intel's next-generation Core Ultra processors, bringing advanced local AI capabilities to millions of enterprise users.",
+        summary: `A new joint initiative aims to deeply integrate ${company.name}'s capabilities directly into next-generation cloud environments, bringing advanced local AI and processing capabilities to millions of enterprise users worldwide.`,
         url: "#"
       },
       {
         id: 4,
-        title: "Quarterly Earnings: Intel Shows Recovery in Client Computing",
+        title: `Quarterly Earnings: ${company.name} Shows Strong Growth in Key Sectors`,
         date: "2026-03-01",
-        summary: "Intel's Q1 financial results indicate a strong rebound in the PC market, driven by the refresh cycle and the introduction of AI-enabled PCs. Data center revenues remain highly competitive.",
+        summary: `${company.name}'s Q1 financial results indicate a strong rebound in demand, driven by the global tech refresh cycle and the rapid introduction of new AI-enabled infrastructure and products.`,
         url: "#"
       },
       {
         id: 5,
-        title: "Intel Announces Expansion of Packaging Facilities in Advanced Hub",
+        title: `${company.name} Announces $2 Billion Expansion of Advanced Facilities`,
         date: "2026-02-28",
-        summary: "To meet growing demand for advanced packaging technologies like Foveros, Intel is committing an additional $2 billion to expand its packaging and testing facilities globally.",
+        summary: `To meet the surging global demand for cutting-edge technology, ${company.name} is committing significant capital to expand its operational footprint, research, and testing facilities globally.`,
         url: "#"
       }
     ];
 
     // --- Main Application Component ---
     function App() {
+      const [activeCompany, setActiveCompany] = useState(COMPANIES[0]);
       const [news, setNews] = useState([]);
       const [selectedArticle, setSelectedArticle] = useState(null);
-      const [intcPrice, setIntcPrice] = useState(null);
+      
+      const [prices, setPrices] = useState({});
       const [isLoadingPrice, setIsLoadingPrice] = useState(false);
       
       const [quickInsight, setQuickInsight] = useState({ type: null, text: '', loading: false, error: '' });
@@ -115,39 +133,62 @@
       const [isLoadingAi, setIsLoadingAi] = useState(false);
       const [aiError, setAiError] = useState('');
 
-      const fetchPrice = async () => {
+      const fetchPrices = async () => {
         setIsLoadingPrice(true);
+        const symbols = COMPANIES.map(c => c.id).join(',');
         try {
-          const res = await fetch('https://api.codetabs.com/v1/proxy?quest=https://query2.finance.yahoo.com/v8/finance/chart/INTC');
+          // Fetch quotes for all tickers at once
+          const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`);
           if (!res.ok) throw new Error('Primary proxy failed');
           const data = await res.json();
-          const price = data.chart.result[0].meta.regularMarketPrice;
-          setIntcPrice(price.toFixed(2));
+          
+          const newPrices = {};
+          data.quoteResponse.result.forEach(quote => {
+            newPrices[quote.symbol] = quote.regularMarketPrice.toFixed(2);
+          });
+          setPrices(newPrices);
         } catch (error) {
           try {
-            const targetUrl = encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/INTC');
+            const targetUrl = encodeURIComponent(`https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`);
             const fallbackRes = await fetch(`https://corsproxy.io/?${targetUrl}`);
             if (!fallbackRes.ok) throw new Error('Fallback proxy failed');
             const data = await fallbackRes.json();
-            const price = data.chart.result[0].meta.regularMarketPrice;
-            setIntcPrice(price.toFixed(2));
+            
+            const newPrices = {};
+            data.quoteResponse.result.forEach(quote => {
+              newPrices[quote.symbol] = quote.regularMarketPrice.toFixed(2);
+            });
+            setPrices(newPrices);
           } catch (fallbackError) {
             console.log("Live price fetch restricted by network. Using static fallback.");
-            setIntcPrice("45.77");
+            setPrices({ INTC: '45.77', NVDA: '920.15', AMD: '185.20', AVGO: '1350.50', TSLA: '210.33' });
           }
         } finally {
           setIsLoadingPrice(false);
         }
       };
 
+      // Handle active company changes
       useEffect(() => {
-        setNews(MOCK_NEWS);
-        // Initially don't select an article on mobile, so the list shows first
-        if (window.innerWidth >= 1024) {
-          setSelectedArticle(MOCK_NEWS[0]);
-        }
-        fetchPrice();
+        const generatedNews = generateMockNews(activeCompany);
+        setNews(generatedNews);
         
+        // On desktop, auto-select the first article when switching companies
+        if (window.innerWidth >= 1024) {
+          setSelectedArticle(generatedNews[0]);
+        } else {
+          setSelectedArticle(null); // Return to list view on mobile
+        }
+        
+        // Reset AI states
+        setAiResponse('');
+        setAiError('');
+        setQuickInsight({ type: null, text: '', loading: false, error: '' });
+      }, [activeCompany]);
+
+      // Initial Load
+      useEffect(() => {
+        fetchPrices();
         const savedKey = localStorage.getItem('deepseek_api_key');
         if (savedKey) setApiKey(savedKey);
       }, []);
@@ -183,11 +224,11 @@
               messages: [
                 {
                   role: 'system',
-                  content: 'You are an expert options trading analyst. Analyze the provided news article summary and the current Intel (INTC) stock price. Provide a specific technical and strategic opinion on whether a trader should buy INTC call options right now. Provide 3 highly specific, actionable insights, potentially suggesting strike prices, expirations, or technical setups based on this catalyst. Format your response with clear bullet points. Keep it concise, professional, and forward-looking.'
+                  content: `You are an expert options trading analyst. Analyze the provided news article summary and the current ${activeCompany.name} (${activeCompany.id}) stock price. Provide a specific technical and strategic opinion on whether a trader should buy ${activeCompany.id} call options right now. Provide 3 highly specific, actionable insights, potentially suggesting strike prices, expirations, or technical setups based on this catalyst. Format your response with clear bullet points. Keep it concise, professional, and forward-looking.`
                 },
                 {
                   role: 'user',
-                  content: `Current INTC Stock Price: $${intcPrice || 'Unknown'}\n\nNews Title: ${selectedArticle.title}\nDate: ${selectedArticle.date}\nSummary: ${selectedArticle.summary}`
+                  content: `Current ${activeCompany.id} Stock Price: $${prices[activeCompany.id] || 'Unknown'}\n\nNews Title: ${selectedArticle.title}\nDate: ${selectedArticle.date}\nSummary: ${selectedArticle.summary}`
                 }
               ],
               temperature: 0.7,
@@ -223,15 +264,15 @@
         
         let systemPrompt = "";
         if (actionType === 'explain') {
-          systemPrompt = "You are a tech educator. Explain the complex semiconductor or AI technology mentioned in this article in simple terms (Explain Like I'm 5). Keep it to 2-3 short paragraphs.";
+          systemPrompt = `You are a tech educator. Explain the complex technology or business concept mentioned in this ${activeCompany.name} article in simple terms (Explain Like I'm 5). Keep it to 2-3 short paragraphs.`;
         } else if (actionType === 'competitors') {
-          systemPrompt = "You are a semiconductor industry analyst. Briefly analyze how this Intel news impacts its main competitors (like AMD, Nvidia, TSMC, ARM). Use bullet points and keep it concise.";
+          systemPrompt = `You are an industry analyst. Briefly analyze how this ${activeCompany.name} news impacts its main competitors. Use bullet points and keep it concise.`;
         } else if (actionType === 'sentiment') {
-          systemPrompt = "You are a financial sentiment analyzer. Rate the sentiment of this news for INTC stock as BULLISH, BEARISH, or NEUTRAL. Provide a score from 1-100 and a 1-sentence justification. Format your response cleanly.";
+          systemPrompt = `You are a financial sentiment analyzer. Rate the sentiment of this news for ${activeCompany.id} stock as BULLISH, BEARISH, or NEUTRAL. Provide a score from 1-100 and a 1-sentence justification. Format your response cleanly.`;
         } else if (actionType === 'takeaways') {
-          systemPrompt = "Extract the 3 most crucial factual takeaways from this article. Keep them strictly factual and brief. Use bullet points.";
+          systemPrompt = `Extract the 3 most crucial factual takeaways from this ${activeCompany.name} article. Keep them strictly factual and brief. Use bullet points.`;
         } else if (actionType === 'risk') {
-          systemPrompt = "Identify the top 2 biggest risks, drawbacks, or headwinds mentioned or implied by this news for Intel. Be highly critical and concise. Use bullet points.";
+          systemPrompt = `Identify the top 2 biggest risks, drawbacks, or headwinds mentioned or implied by this news for ${activeCompany.name}. Be highly critical and concise. Use bullet points.`;
         }
 
         try {
@@ -275,31 +316,57 @@
 
       return (
         <div className="min-h-screen bg-slate-50 flex flex-col h-[100dvh]">
-          {/* Header */}
+          {/* Header & Multi-Ticker Dashboard */}
           <header className="bg-blue-900 text-white shadow-md flex-none z-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-16">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-blue-600 p-1.5 md:p-2 rounded-lg">
-                    <Newspaper className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              <div className="flex flex-col md:flex-row justify-between md:items-center py-3 md:h-16 gap-3 md:gap-0">
+                
+                {/* Logo Area */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-blue-600 p-1.5 md:p-2 rounded-lg">
+                      <Newspaper className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                    </div>
+                    <h1 className="text-lg md:text-xl font-bold tracking-tight">Tech<span className="text-blue-300">Pulse</span></h1>
                   </div>
-                  <h1 className="text-lg md:text-xl font-bold tracking-tight">Intel<span className="text-blue-300">Pulse</span></h1>
-                </div>
-                <div className="flex items-center space-x-2 md:space-x-4">
-                  <div className="flex items-center bg-blue-800/80 border border-blue-700 px-2 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium shadow-sm">
-                    <TrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2 text-emerald-400" />
-                    <span className="text-blue-200 mr-1 hidden sm:inline">INTC:</span>
-                    <span className="font-bold text-white">
-                      {isLoadingPrice ? '...' : `$${intcPrice}`}
-                    </span>
-                  </div>
+                  
+                  {/* Settings Button (Mobile right aligned) */}
                   <button 
                     onClick={() => setShowSettings(true)}
-                    className="flex items-center bg-blue-800 hover:bg-blue-700 transition-colors p-2 md:px-4 md:py-2 rounded-md text-sm font-medium"
+                    className="md:hidden flex items-center text-blue-200 hover:text-white p-2"
+                  >
+                    <Settings className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Live Ticker Tape / Company Selector */}
+                <div className="flex overflow-x-auto no-scrollbar space-x-2 md:space-x-3 pb-1 md:pb-0 items-center snap-x">
+                  {COMPANIES.map(company => (
+                    <button 
+                      key={company.id}
+                      onClick={() => setActiveCompany(company)}
+                      className={`flex items-center px-3 py-1.5 md:py-1.5 rounded-lg text-xs md:text-sm font-medium shadow-sm border transition-all cursor-pointer whitespace-nowrap snap-start focus:outline-none ${
+                        activeCompany.id === company.id 
+                          ? 'bg-blue-700/90 border-blue-400 ring-1 ring-blue-400' 
+                          : 'bg-blue-800/40 border-transparent hover:bg-blue-800/80 hover:border-blue-600'
+                      }`}
+                    >
+                      <TrendingUp className={`w-3 h-3 md:w-4 md:h-4 mr-1.5 ${activeCompany.id === company.id ? 'text-emerald-400' : 'text-slate-400'}`} />
+                      <span className={`mr-1 ${activeCompany.id === company.id ? 'text-blue-100' : 'text-blue-300'}`}>{company.id}:</span>
+                      <span className="font-bold text-white">
+                        {isLoadingPrice ? '...' : (prices[company.id] ? `$${prices[company.id]}` : '--')}
+                      </span>
+                    </button>
+                  ))}
+                  
+                  {/* Settings Button (Desktop) */}
+                  <button 
+                    onClick={() => setShowSettings(true)}
+                    className="hidden md:flex items-center bg-blue-800 hover:bg-blue-700 border border-transparent hover:border-blue-600 transition-colors px-3 py-1.5 rounded-lg text-sm font-medium ml-2 shadow-sm"
                     aria-label="API Settings"
                   >
-                    <Settings className="w-4 h-4 md:mr-2" />
-                    <span className="hidden md:inline">Settings</span>
+                    <Settings className="w-4 h-4 mr-1.5" />
+                    <span>Config</span>
                   </button>
                 </div>
               </div>
@@ -312,9 +379,14 @@
               
               {/* Left Column: News Feed (Hides on mobile if article is selected) */}
               <div className={`w-full lg:w-1/3 flex-col h-full bg-slate-50 lg:bg-transparent p-4 lg:p-0 ${selectedArticle ? 'hidden lg:flex' : 'flex'}`}>
-                <h2 className="text-lg font-semibold mb-3 lg:mb-4 text-slate-700 flex items-center flex-none">
-                  <Newspaper className="w-5 h-5 mr-2 text-blue-600"/> Latest News
-                </h2>
+                <div className="flex items-center justify-between mb-3 lg:mb-4 flex-none">
+                  <h2 className="text-lg font-semibold text-slate-700 flex items-center">
+                    <Newspaper className="w-5 h-5 mr-2 text-blue-600"/> 
+                    {activeCompany.name} News
+                  </h2>
+                  <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{activeCompany.id}</span>
+                </div>
+                
                 <div className="flex-1 overflow-y-auto space-y-3 lg:space-y-4 lg:pr-2 custom-scrollbar pb-6 lg:pb-0">
                   {news.map((article) => (
                     <div 
@@ -350,7 +422,7 @@
                         className="flex items-center text-blue-600 hover:text-blue-800 font-semibold px-2 py-1"
                       >
                         <ArrowLeft className="w-5 h-5 mr-2" /> 
-                        Back to News List
+                        Back to {activeCompany.name} News
                       </button>
                     </div>
 
@@ -514,7 +586,7 @@
                             </div>
                             <h4 className="text-base md:text-lg font-semibold text-slate-800 mb-2">Ready for Analysis</h4>
                             <p className="text-xs md:text-sm text-slate-500 max-w-sm">
-                              Generate a technical opinion and call option strategies using the latest INTC price.
+                              Generate a technical opinion and call option strategies using the latest {activeCompany.id} price.
                             </p>
                           </div>
                         )
@@ -524,7 +596,6 @@
                   </div>
                 ) : (
                   <div className="flex items-center justify-center h-full text-slate-500">
-                    {/* Empty state only seen on large screens before selection */}
                     <div className="flex flex-col items-center">
                       <Newspaper className="w-12 h-12 text-slate-300 mb-4" />
                       <p>Select an article from the feed</p>
