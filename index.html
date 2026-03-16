@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>TechPulse AI Insights</title>
+  <title>TechPulse Live AI Insights</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,29 +16,12 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background-color: #cbd5e1;
-      border-radius: 20px;
-    }
-    @media (min-width: 1024px) {
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-      }
-    }
-    /* Hide scrollbar for ticker tape */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+    @media (min-width: 1024px) { .custom-scrollbar::-webkit-scrollbar { width: 6px; } }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans selection:bg-blue-200 overflow-hidden">
@@ -47,11 +30,9 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // --- Inline Icon Components (Replacing lucide-react for standalone HTML) ---
+    // --- Inline Icon Components ---
     const SvgIcon = ({ children, className = "" }) => (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        {children}
-      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
     );
     const Newspaper = ({className}) => <SvgIcon className={className}><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></SvgIcon>;
     const BrainCircuit = ({className}) => <SvgIcon className={className}><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M12 13h4"/><path d="M12 17h4"/><path d="M16 9h2.428a2 2 0 0 0 1.666-.889l.906-1.333a2 2 0 0 1 1.666-.889H24"/><path d="M16 13h2.428a2 2 0 0 0 1.666-.889l.906-1.333a2 2 0 0 1 1.666-.889H24"/><path d="M16 17h2.428a2 2 0 0 0 1.666-.889l.906-1.333a2 2 0 0 1 1.666-.889H24"/></SvgIcon>;
@@ -73,58 +54,29 @@
     // --- Translations Dictionary ---
     const TRANSLATIONS = {
       en: {
-        appTitle: "Tech",
-        appTitleHighlight: "Pulse",
-        settings: "Config",
-        news: "News",
-        backToNews: "Back to",
-        readFull: "Read full article",
-        quickInsights: "DeepSeek Quick Insights",
-        explainTech: "Explain Tech",
-        competitors: "Competitors",
-        sentiment: "Sentiment",
-        takeaways: "Takeaways",
-        riskCheck: "Risk Check",
-        optionsAnalysis: "Options Analysis",
-        analyzeOptions: "Analyze Call Options",
-        analyzing: "Analyzing...",
-        readyForAnalysis: "Ready for Analysis",
+        appTitle: "Tech", appTitleHighlight: "Pulse", settings: "Config", news: "News",
+        backToNews: "Back to", readFull: "Read original article", quickInsights: "DeepSeek Quick Insights",
+        explainTech: "Explain Tech", competitors: "Competitors", sentiment: "Sentiment",
+        takeaways: "Takeaways", riskCheck: "Risk Check", optionsAnalysis: "Options Analysis",
+        analyzeOptions: "Analyze Call Options", analyzing: "Analyzing...", readyForAnalysis: "Ready for Analysis",
         readyDesc: "Generate a technical opinion and call option strategies using the latest",
-        selectArticle: "Select an article from the feed",
-        apiConfig: "API Configuration",
-        apiKeyStr: "DeepSeek API Key",
-        apiDesc: "Stored locally in your browser's localStorage. Only sent directly to DeepSeek API.",
-        cancel: "Cancel",
-        save: "Save Settings"
+        selectArticle: "Select a live news article from the feed", apiConfig: "API Configuration",
+        apiKeyStr: "DeepSeek API Key", apiDesc: "Stored locally. Only sent directly to DeepSeek.",
+        cancel: "Cancel", save: "Save Settings", live: "LIVE"
       },
       zh: {
-        appTitle: "科技",
-        appTitleHighlight: "脉搏",
-        settings: "设置",
-        news: "新闻",
-        backToNews: "返回",
-        readFull: "阅读全文",
-        quickInsights: "DeepSeek 快速洞察",
-        explainTech: "技术解析",
-        competitors: "竞争对手",
-        sentiment: "市场情绪",
-        takeaways: "核心摘要",
-        riskCheck: "风险评估",
-        optionsAnalysis: "期权分析",
-        analyzeOptions: "分析看涨期权",
-        analyzing: "分析中...",
-        readyForAnalysis: "准备分析",
+        appTitle: "科技", appTitleHighlight: "脉搏", settings: "设置", news: "实时新闻",
+        backToNews: "返回", readFull: "阅读原文", quickInsights: "DeepSeek 快速洞察",
+        explainTech: "技术解析", competitors: "竞争对手", sentiment: "市场情绪",
+        takeaways: "核心摘要", riskCheck: "风险评估", optionsAnalysis: "期权分析",
+        analyzeOptions: "分析看涨期权", analyzing: "分析中...", readyForAnalysis: "准备分析",
         readyDesc: "结合最新股价，生成期权技术意见和看涨策略：",
-        selectArticle: "请从左侧列表中选择一篇新闻",
-        apiConfig: "API 配置",
-        apiKeyStr: "DeepSeek API 密钥",
-        apiDesc: "您的密钥安全存储在本地浏览器中，仅直接发送至 DeepSeek API。",
-        cancel: "取消",
-        save: "保存设置"
+        selectArticle: "请从左侧列表中选择一篇实时新闻", apiConfig: "API 配置",
+        apiKeyStr: "DeepSeek API 密钥", apiDesc: "本地存储。仅直接发送至 DeepSeek。",
+        cancel: "取消", save: "保存设置", live: "实时"
       }
     };
 
-    // --- Dynamic Mock Data Generator ---
     const COMPANIES = [
       { id: 'INTC', name: 'Intel' },
       { id: 'NVDA', name: 'Nvidia' },
@@ -133,292 +85,148 @@
       { id: 'TSLA', name: 'Tesla' }
     ];
 
-    const generateMockNews = (company, lang) => {
-      if (lang === 'zh') {
-        return [
-          {
-            id: 1,
-            title: `${company.name} 发布下一代 AI 架构以挑战竞争对手`,
-            date: "2026-03-15",
-            summary: `${company.name} 正式发布了备受期待的新型 AI 平台，承诺在性价比方面大幅领先竞争对手。新硬件主要针对企业级 AI 工作负载和大规模语言模型推理。`,
-            url: "#"
-          },
-          {
-            id: 2,
-            title: `分析师因持续的 AI 需求上调 ${company.name} 股票评级`,
-            date: "2026-03-14",
-            summary: `华尔街顶级分析师今日将其对 ${company.name} 的目标价上调了 15%，指出由于各大云服务提供商加大资本支出，对该公司核心数据中心产品的需求超出了此前预期。`,
-            url: "#"
-          },
-          {
-            id: 3,
-            title: `${company.name} CEO 在全球科技峰会上揭示未来十年战略`,
-            date: "2026-03-12",
-            summary: `在今日的 keynote 演讲中，${company.name} 首席执行官详细介绍了公司向自动化和边缘计算转型的战略，预计这将开辟价值数百亿美元的新市场。`,
-            url: "#"
-          },
-          {
-            id: 4,
-            title: `${company.name} 实现关键供应链与制造里程碑`,
-            date: "2026-03-10",
-            summary: `标志着其战略路线图迈出重要一步，${company.name} 宣布其最新生产目标取得早期成功，利用先进制造技术巩固了其领先于市场预期的地位。`,
-            url: "#"
-          },
-          {
-            id: 5,
-            title: `${company.name} 扩大与主要供应商的云基础设施合作`,
-            date: "2026-03-08",
-            summary: `一项新的联合计划旨在将 ${company.name} 的功能深度集成到下一代云环境中，为全球数百万企业用户带来先进的本地 AI 和数据处理能力。`,
-            url: "#"
-          },
-          {
-            id: 6,
-            title: `新专利揭示 ${company.name} 突破性的 3D 封装与散热技术`,
-            date: "2026-03-05",
-            summary: `美国专利局公布的文件显示，${company.name} 正在开发一种革命性的液体冷却和芯片堆叠方法，这可能会大幅降低高强度计算环境下的能耗。`,
-            url: "#"
-          },
-          {
-            id: 7,
-            title: `战略收购：${company.name} 斥资收购欧洲软件初创企业`,
-            date: "2026-03-03",
-            summary: `为了加强其软件生态系统，${company.name} 宣布已达成最终协议，收购一家专注于优化机器学习算法编译的领先初创公司。`,
-            url: "#"
-          },
-          {
-            id: 8,
-            title: `季度财报：${company.name} 在关键领域表现出强劲增长`,
-            date: "2026-03-01",
-            summary: `${company.name} 的第一季度财务业绩显示市场需求强劲反弹，这主要得益于全球技术更新周期以及新型 AI 基础设施和产品的快速推广。`,
-            url: "#"
-          },
-          {
-            id: 9,
-            title: `${company.name} 宣布投资 20 亿美元扩建先进设施`,
-            date: "2026-02-28",
-            summary: `为了满足全球对尖端技术激增的需求，${company.name} 承诺投入大量资金，以在全球范围内扩大其运营足迹、研发中心和测试设施。`,
-            url: "#"
-          },
-          {
-            id: 10,
-            title: `${company.name} 推出全新的开源开发者工具包`,
-            date: "2026-02-25",
-            summary: `旨在降低开发者的准入门槛，${company.name} 免费发布了一套全面的软件工具，使得在平台上优化和部署模型比以往任何时候都更容易。`,
-            url: "#"
-          },
-          {
-            id: 11,
-            title: `因市场支配地位，${company.name} 面临欧盟的初步监管审查`,
-            date: "2026-02-22",
-            summary: `随着其市场份额的不断扩大，欧盟监管机构宣布已开始对 ${company.name} 的定价策略和潜在的垄断行为进行早期评估。`,
-            url: "#"
-          },
-          {
-            id: 12,
-            title: `${company.name} 宣布提前两年达成碳中和目标`,
-            date: "2026-02-18",
-            summary: `在最新的 ESG 报告中，${company.name} 证实其全球办事处和主要数据中心现在已 100% 由可再生能源供电。`,
-            url: "#"
-          },
-          {
-            id: 13,
-            title: `前所未有的需求导致 ${company.name} 旗舰产品严重供不应求`,
-            date: "2026-02-14",
-            summary: `供应链渠道的报告指出，尽管工厂满负荷运转，${company.name} 最新发布的高端产品订单积压已长达六个月。`,
-            url: "#"
-          },
-          {
-            id: 14,
-            title: `${company.name} 在实验室展出早期量子计算架构原型`,
-            date: "2026-02-10",
-            summary: `虽然距离商业化还有数年时间，但 ${company.name} 的研究团队成功演示了一种具有极高稳定性的新型量子比特设计，引发了业界的广泛关注。`,
-            url: "#"
-          }
-        ];
-      }
-
-      // Default English
-      return [
-        {
-          id: 1,
-          title: `${company.name} Unveils Next-Generation AI Architecture to Challenge Rivals`,
-          date: "2026-03-15",
-          summary: `${company.name} has officially launched its highly anticipated new AI platform, promising significant performance-per-dollar advantages over competitors. The new hardware targets enterprise AI workloads and large language model inference at scale.`,
-          url: "#"
-        },
-        {
-          id: 2,
-          title: `Analysts Upgrade ${company.name} Stock Rating on Unprecedented AI Demand`,
-          date: "2026-03-14",
-          summary: `Top Wall Street analysts raised their price targets for ${company.name} by 15% today, citing higher-than-expected demand for its core data center products as hyperscalers ramp up capital expenditures.`,
-          url: "#"
-        },
-        {
-          id: 3,
-          title: `${company.name} CEO Outlines Decade-Long Strategy at Global Tech Summit`,
-          date: "2026-03-12",
-          summary: `In a keynote address today, the CEO of ${company.name} detailed the company's strategic pivot towards automation and edge computing, predicting a new addressable market worth tens of billions.`,
-          url: "#"
-        },
-        {
-          id: 4,
-          title: `${company.name} Achieves Key Supply Chain and Manufacturing Milestone`,
-          date: "2026-03-10",
-          summary: `Marking a major step in its strategic roadmap, ${company.name} announced early success on its latest production targets, utilizing advanced manufacturing techniques to secure its position ahead of market expectations.`,
-          url: "#"
-        },
-        {
-          id: 5,
-          title: `${company.name} Expands Cloud Infrastructure Partnership with Major Providers`,
-          date: "2026-03-08",
-          summary: `A new joint initiative aims to deeply integrate ${company.name}'s capabilities directly into next-generation cloud environments, bringing advanced local AI and processing capabilities to millions of enterprise users worldwide.`,
-          url: "#"
-        },
-        {
-          id: 6,
-          title: `New Patents Reveal ${company.name}'s Breakthroughs in 3D Packaging and Cooling`,
-          date: "2026-03-05",
-          summary: `Filings published by the US Patent Office show ${company.name} is developing a revolutionary liquid cooling and chip-stacking method that could drastically reduce power consumption in high-intensity compute environments.`,
-          url: "#"
-        },
-        {
-          id: 7,
-          title: `Strategic Acquisition: ${company.name} Buys European Software Startup`,
-          date: "2026-03-03",
-          summary: `To bolster its software ecosystem, ${company.name} announced a definitive agreement to acquire a leading startup focused on optimizing machine learning algorithm compilation.`,
-          url: "#"
-        },
-        {
-          id: 8,
-          title: `Quarterly Earnings: ${company.name} Shows Strong Growth in Key Sectors`,
-          date: "2026-03-01",
-          summary: `${company.name}'s Q1 financial results indicate a strong rebound in demand, driven by the global tech refresh cycle and the rapid introduction of new AI-enabled infrastructure and products.`,
-          url: "#"
-        },
-        {
-          id: 9,
-          title: `${company.name} Announces $2 Billion Expansion of Advanced Facilities`,
-          date: "2026-02-28",
-          summary: `To meet the surging global demand for cutting-edge technology, ${company.name} is committing significant capital to expand its operational footprint, research, and testing facilities globally.`,
-          url: "#"
-        },
-        {
-          id: 10,
-          title: `${company.name} Launches Open-Source Developer Toolkit`,
-          date: "2026-02-25",
-          summary: `Aiming to lower the barrier to entry, ${company.name} released a comprehensive suite of software tools for free, making it easier than ever for developers to fine-tune and deploy models on their architecture.`,
-          url: "#"
-        },
-        {
-          id: 11,
-          title: `${company.name} Faces Preliminary EU Regulatory Scrutiny Over Market Dominance`,
-          date: "2026-02-22",
-          summary: `As its market share expands, European regulators announced they have begun early assessments of ${company.name}'s pricing strategies and potential anti-competitive behavior.`,
-          url: "#"
-        },
-        {
-          id: 12,
-          title: `${company.name} Achieves Carbon Neutrality Goal Two Years Ahead of Schedule`,
-          date: "2026-02-18",
-          summary: `In its latest ESG report, ${company.name} confirmed that its global offices and primary data centers are now powered 100% by renewable energy sources.`,
-          url: "#"
-        },
-        {
-          id: 13,
-          title: `Unprecedented Demand Leads to Shortages for ${company.name}'s Flagship Products`,
-          date: "2026-02-14",
-          summary: `Supply chain checks indicate that despite running fabs at maximum capacity, order backlogs for ${company.name}'s latest high-end releases have stretched to six months.`,
-          url: "#"
-        },
-        {
-          id: 14,
-          title: `${company.name} Showcases Early Prototype of Quantum Computing Architecture`,
-          date: "2026-02-10",
-          summary: `While commercialization remains years away, researchers at ${company.name} successfully demonstrated a new qubit design with extreme stability, turning heads across the industry.`,
-          url: "#"
-        }
-      ];
-    };
-
     // --- Main Application Component ---
     function App() {
       const [activeCompany, setActiveCompany] = useState(COMPANIES[0]);
-      const [language, setLanguage] = useState('en'); // 'en' or 'zh'
+      const [language, setLanguage] = useState('en');
+      
       const [news, setNews] = useState([]);
+      const [isLoadingNews, setIsLoadingNews] = useState(false);
       const [selectedArticle, setSelectedArticle] = useState(null);
       
       const [prices, setPrices] = useState({});
       const [isLoadingPrice, setIsLoadingPrice] = useState(false);
       
       const [quickInsight, setQuickInsight] = useState({ type: null, text: '', loading: false, error: '' });
-
       const [apiKey, setApiKey] = useState('sk-607570af647e4ce3baabf5f3da383adf');
       const [showSettings, setShowSettings] = useState(false);
       const [aiResponse, setAiResponse] = useState('');
       const [isLoadingAi, setIsLoadingAi] = useState(false);
       const [aiError, setAiError] = useState('');
 
-      const t = TRANSLATIONS[language]; // Current translation dictionary
+      const t = TRANSLATIONS[language];
 
-      const fetchPrices = async () => {
-        setIsLoadingPrice(true);
-        const symbols = COMPANIES.map(c => c.id).join(',');
+      // Fetch Real Live News via public RSS-to-JSON API (with Cache Busting)
+      const fetchLiveNews = async (company) => {
+        setIsLoadingNews(true);
         try {
-          // Fetch quotes for all tickers at once
-          const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`);
-          if (!res.ok) throw new Error('Primary proxy failed');
+          const timestamp = new Date().getTime();
+          // Yahoo Finance RSS feed for the specific ticker
+          const rssUrl = `https://feeds.finance.yahoo.com/rss/2.0/headline?s=${company.id}&region=US&lang=en-US`;
+          // Convert RSS to JSON using a free proxy with cache-busting
+          const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&t=${timestamp}`);
           const data = await res.json();
           
-          const newPrices = {};
-          data.quoteResponse.result.forEach(quote => {
-            newPrices[quote.symbol] = quote.regularMarketPrice.toFixed(2);
-          });
-          setPrices(newPrices);
-        } catch (error) {
-          try {
-            const targetUrl = encodeURIComponent(`https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`);
-            const fallbackRes = await fetch(`https://corsproxy.io/?${targetUrl}`);
-            if (!fallbackRes.ok) throw new Error('Fallback proxy failed');
-            const data = await fallbackRes.json();
-            
-            const newPrices = {};
-            data.quoteResponse.result.forEach(quote => {
-              newPrices[quote.symbol] = quote.regularMarketPrice.toFixed(2);
+          if (data.status === 'ok' && data.items.length > 0) {
+            const liveNews = data.items.map((item, index) => {
+              const tmp = document.createElement("DIV");
+              tmp.innerHTML = item.description || "Live market update. Click 'Read original article' for full details.";
+              const summaryText = tmp.textContent || tmp.innerText || "";
+              
+              const pubDate = new Date(item.pubDate);
+              const formattedDate = isNaN(pubDate) ? item.pubDate : pubDate.toLocaleString();
+
+              return {
+                id: index,
+                title: item.title,
+                date: formattedDate,
+                summary: summaryText.substring(0, 300) + (summaryText.length > 300 ? '...' : ''),
+                url: item.link
+              };
             });
-            setPrices(newPrices);
-          } catch (fallbackError) {
-            console.log("Live price fetch restricted by network. Using static fallback.");
-            setPrices({ INTC: '45.77', NVDA: '920.15', AMD: '185.20', AVGO: '1350.50', TSLA: '210.33' });
+            
+            setNews(liveNews);
+            if (window.innerWidth >= 1024) setSelectedArticle(liveNews[0]);
+          } else {
+            throw new Error('No news found');
           }
+        } catch (error) {
+          console.error("Live news fetch error:", error);
+          setNews([{
+            id: 0, title: `Unable to fetch live feed for ${company.name}`, 
+            date: new Date().toLocaleDateString(), 
+            summary: "Please check your internet connection or the RSS proxy might be temporarily rate-limited.", 
+            url: "#"
+          }]);
         } finally {
-          setIsLoadingPrice(false);
+          setIsLoadingNews(false);
         }
       };
 
-      // Handle active company or language changes
-      useEffect(() => {
-        const generatedNews = generateMockNews(activeCompany, language);
-        setNews(generatedNews);
-        
-        // Maintain selection if switching languages, otherwise default based on screen size
-        if (selectedArticle) {
-          const newSelected = generatedNews.find(n => n.id === selectedArticle.id);
-          setSelectedArticle(newSelected || null);
-        } else if (window.innerWidth >= 1024) {
-          setSelectedArticle(generatedNews[0]);
+      // Robust Proxy Waterfall for Live Prices (Cache Busted)
+      const fetchPrices = async () => {
+        setIsLoadingPrice(true);
+        const symbols = COMPANIES.map(c => c.id).join(',');
+        const targetUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+        const timestamp = new Date().getTime(); // Cache buster
+
+        // Array of proxies to try sequentially
+        const proxies = [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl + '&t=' + timestamp)}`,
+          `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
+          `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+        ];
+
+        let success = false;
+
+        for (const proxy of proxies) {
+          if (success) break; // Stop trying if one worked
+          try {
+            const res = await fetch(proxy);
+            if (!res.ok) continue; // Try next proxy
+            
+            const data = await res.json();
+            if (data && data.quoteResponse && data.quoteResponse.result) {
+              const newPrices = {};
+              data.quoteResponse.result.forEach(quote => {
+                newPrices[quote.symbol] = quote.regularMarketPrice.toFixed(2);
+              });
+              setPrices(newPrices);
+              success = true;
+            }
+          } catch (e) {
+            console.warn("Proxy failed, trying next...", proxy);
+          }
+        }
+
+        if (!success) {
+          console.error("All proxies blocked. Network restricts live price fetch.");
+          // No more fake numbers. Show N/A if it completely fails.
+          const errorPrices = {};
+          COMPANIES.forEach(c => errorPrices[c.id] = 'N/A');
+          setPrices(errorPrices);
         }
         
-        // Reset AI states when context changes so we don't display the wrong language
+        setIsLoadingPrice(false);
+      };
+
+      // Handle active company changes
+      useEffect(() => {
+        setNews([]);
+        setSelectedArticle(null);
         setAiResponse('');
         setAiError('');
         setQuickInsight({ type: null, text: '', loading: false, error: '' });
-      }, [activeCompany, language]);
+        
+        fetchLiveNews(activeCompany);
+      }, [activeCompany]);
+
+      // Handle language toggle clears
+      useEffect(() => {
+        setAiResponse('');
+        setAiError('');
+        setQuickInsight({ type: null, text: '', loading: false, error: '' });
+      }, [language]);
 
       // Initial Load
       useEffect(() => {
         fetchPrices();
         const savedKey = localStorage.getItem('deepseek_api_key');
         if (savedKey) setApiKey(savedKey);
+        
+        // Refresh prices every 60 seconds
+        const priceInterval = setInterval(fetchPrices, 60000);
+        return () => clearInterval(priceInterval);
       }, []);
 
       const handleSaveKey = (e) => {
@@ -433,7 +241,6 @@
           setAiError(language === 'zh' ? "请先配置您的 DeepSeek API 密钥。" : "Please configure your DeepSeek API key first.");
           return;
         }
-
         if (!selectedArticle) return;
 
         setIsLoadingAi(true);
@@ -447,16 +254,13 @@
         try {
           const response = await fetch('https://api.deepseek.com/chat/completions', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`
-            },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
             body: JSON.stringify({
               model: 'deepseek-chat',
               messages: [
                 {
                   role: 'system',
-                  content: `You are an expert options trading analyst. Analyze the provided news article summary and the current ${activeCompany.name} (${activeCompany.id}) stock price. Provide a specific technical and strategic opinion on whether a trader should buy ${activeCompany.id} call options right now. Provide 3 highly specific, actionable insights, potentially suggesting strike prices, expirations, or technical setups based on this catalyst. Format your response with clear bullet points. Keep it concise, professional, and forward-looking. ${langInstruction}`
+                  content: `You are an expert options trading analyst. Analyze the provided REAL news article and the current ${activeCompany.name} (${activeCompany.id}) stock price. Provide a specific technical and strategic opinion on whether a trader should buy ${activeCompany.id} call options right now. Provide 3 highly specific, actionable insights based on this catalyst. Format your response with clear bullet points. Keep it concise, professional, and forward-looking. ${langInstruction}`
                 },
                 {
                   role: 'user',
@@ -469,11 +273,7 @@
           });
 
           const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.error?.message || `API Error: ${response.status}`);
-          }
-
+          if (!response.ok) throw new Error(data.error?.message || `API Error: ${response.status}`);
           setAiResponse(data.choices[0].message.content);
         } catch (err) {
           console.error("DeepSeek API Error:", err);
@@ -489,7 +289,6 @@
           setQuickInsight({ type: null, text: '', loading: false, error: language === 'zh' ? '请先配置您的 API 密钥。' : 'Please configure your DeepSeek API key first.' });
           return;
         }
-
         if (!selectedArticle) return;
         
         setQuickInsight({ type: actionType, text: '', loading: true, error: '' });
@@ -500,24 +299,21 @@
 
         let systemPrompt = "";
         if (actionType === 'explain') {
-          systemPrompt = `You are a tech educator. Explain the complex technology or business concept mentioned in this ${activeCompany.name} article in simple terms (Explain Like I'm 5). Keep it to 2-3 short paragraphs. ${langInstruction}`;
+          systemPrompt = `You are a tech educator. Read this real news article about ${activeCompany.name}. Explain the complex technology or business concept mentioned in simple terms (Explain Like I'm 5). Keep it to 2-3 short paragraphs. ${langInstruction}`;
         } else if (actionType === 'competitors') {
-          systemPrompt = `You are an industry analyst. Briefly analyze how this ${activeCompany.name} news impacts its main competitors. Use bullet points and keep it concise. ${langInstruction}`;
+          systemPrompt = `You are an industry analyst. Briefly analyze how this real news about ${activeCompany.name} impacts its main competitors. Use bullet points and keep it concise. ${langInstruction}`;
         } else if (actionType === 'sentiment') {
-          systemPrompt = `You are a financial sentiment analyzer. Rate the sentiment of this news for ${activeCompany.id} stock as BULLISH, BEARISH, or NEUTRAL. Provide a score from 1-100 and a 1-sentence justification. Format your response cleanly. ${langInstruction}`;
+          systemPrompt = `You are a financial sentiment analyzer. Rate the sentiment of this real news for ${activeCompany.id} stock as BULLISH, BEARISH, or NEUTRAL. Provide a score from 1-100 and a 1-sentence justification. Format your response cleanly. ${langInstruction}`;
         } else if (actionType === 'takeaways') {
-          systemPrompt = `Extract the 3 most crucial factual takeaways from this ${activeCompany.name} article. Keep them strictly factual and brief. Use bullet points. ${langInstruction}`;
+          systemPrompt = `Extract the 3 most crucial factual takeaways from this real news article. Keep them strictly factual and brief. Use bullet points. ${langInstruction}`;
         } else if (actionType === 'risk') {
-          systemPrompt = `Identify the top 2 biggest risks, drawbacks, or headwinds mentioned or implied by this news for ${activeCompany.name}. Be highly critical and concise. Use bullet points. ${langInstruction}`;
+          systemPrompt = `Identify the top 2 biggest risks, drawbacks, or headwinds mentioned or implied by this real news for ${activeCompany.name}. Be highly critical and concise. Use bullet points. ${langInstruction}`;
         }
 
         try {
           const response = await fetch('https://api.deepseek.com/chat/completions', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`
-            },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
             body: JSON.stringify({
               model: 'deepseek-chat',
               messages: [
@@ -530,11 +326,7 @@
           });
 
           const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.error?.message || `API Error: ${response.status}`);
-          }
-
+          if (!response.ok) throw new Error(data.error?.message || `API Error: ${response.status}`);
           const generatedText = data.choices[0].message.content;
           setQuickInsight({ type: actionType, text: generatedText, loading: false, error: '' });
         } catch (err) {
@@ -550,9 +342,7 @@
         setQuickInsight({ type: null, text: '', loading: false, error: '' });
       };
 
-      const toggleLanguage = () => {
-        setLanguage(prev => prev === 'en' ? 'zh' : 'en');
-      };
+      const toggleLanguage = () => setLanguage(prev => prev === 'en' ? 'zh' : 'en');
 
       return (
         <div className="min-h-screen bg-slate-50 flex flex-col h-[100dvh]">
@@ -560,8 +350,6 @@
           <header className="bg-blue-900 text-white shadow-md flex-none z-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex flex-col md:flex-row justify-between md:items-center py-3 md:h-16 gap-3 md:gap-0">
-                
-                {/* Logo Area & Mobile Controls */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="bg-blue-600 p-1.5 md:p-2 rounded-lg">
@@ -569,60 +357,38 @@
                     </div>
                     <h1 className="text-lg md:text-xl font-bold tracking-tight">{t.appTitle}<span className="text-blue-300">{t.appTitleHighlight}</span></h1>
                   </div>
-                  
-                  {/* Mobile Right Controls */}
                   <div className="md:hidden flex items-center space-x-2">
-                    <button 
-                      onClick={toggleLanguage}
-                      className="flex items-center text-blue-200 hover:text-white px-2 py-1.5 rounded-lg border border-blue-700/50 bg-blue-800/30 text-xs font-bold"
-                    >
-                      <Globe className="w-4 h-4 mr-1" />
-                      {language === 'en' ? '中文' : 'EN'}
+                    <button onClick={toggleLanguage} className="flex items-center text-blue-200 hover:text-white px-2 py-1.5 rounded-lg border border-blue-700/50 bg-blue-800/30 text-xs font-bold">
+                      <Globe className="w-4 h-4 mr-1" />{language === 'en' ? '中文' : 'EN'}
                     </button>
-                    <button 
-                      onClick={() => setShowSettings(true)}
-                      className="flex items-center text-blue-200 hover:text-white p-2"
-                    >
+                    <button onClick={() => setShowSettings(true)} className="flex items-center text-blue-200 hover:text-white p-2">
                       <Settings className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
 
-                {/* Live Ticker Tape / Company Selector */}
                 <div className="flex overflow-x-auto no-scrollbar space-x-2 md:space-x-3 pb-1 md:pb-0 items-center snap-x">
                   {COMPANIES.map(company => (
                     <button 
                       key={company.id}
                       onClick={() => setActiveCompany(company)}
                       className={`flex items-center px-3 py-1.5 md:py-1.5 rounded-lg text-xs md:text-sm font-medium shadow-sm border transition-all cursor-pointer whitespace-nowrap snap-start focus:outline-none ${
-                        activeCompany.id === company.id 
-                          ? 'bg-blue-700/90 border-blue-400 ring-1 ring-blue-400' 
-                          : 'bg-blue-800/40 border-transparent hover:bg-blue-800/80 hover:border-blue-600'
+                        activeCompany.id === company.id ? 'bg-blue-700/90 border-blue-400 ring-1 ring-blue-400' : 'bg-blue-800/40 border-transparent hover:bg-blue-800/80 hover:border-blue-600'
                       }`}
                     >
                       <TrendingUp className={`w-3 h-3 md:w-4 md:h-4 mr-1.5 ${activeCompany.id === company.id ? 'text-emerald-400' : 'text-slate-400'}`} />
                       <span className={`mr-1 ${activeCompany.id === company.id ? 'text-blue-100' : 'text-blue-300'}`}>{company.id}:</span>
                       <span className="font-bold text-white">
-                        {isLoadingPrice ? '...' : (prices[company.id] ? `$${prices[company.id]}` : '--')}
+                        {isLoadingPrice ? '...' : (prices[company.id] && prices[company.id] !== 'N/A' ? `$${prices[company.id]}` : 'N/A')}
                       </span>
                     </button>
                   ))}
-                  
-                  {/* Desktop Controls */}
                   <div className="hidden md:flex items-center pl-2 space-x-2 border-l border-blue-700/50 ml-2">
-                    <button 
-                      onClick={toggleLanguage}
-                      className="flex items-center text-blue-200 hover:text-white hover:bg-blue-800 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-                    >
-                      <Globe className="w-4 h-4 mr-1.5" />
-                      {language === 'en' ? '中文' : 'EN'}
+                    <button onClick={toggleLanguage} className="flex items-center text-blue-200 hover:text-white hover:bg-blue-800 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+                      <Globe className="w-4 h-4 mr-1.5" />{language === 'en' ? '中文' : 'EN'}
                     </button>
-                    <button 
-                      onClick={() => setShowSettings(true)}
-                      className="flex items-center bg-blue-800 hover:bg-blue-700 border border-transparent hover:border-blue-600 transition-colors px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm"
-                    >
-                      <Settings className="w-4 h-4 mr-1.5" />
-                      <span>{t.settings}</span>
+                    <button onClick={() => setShowSettings(true)} className="flex items-center bg-blue-800 hover:bg-blue-700 border border-transparent hover:border-blue-600 transition-colors px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm">
+                      <Settings className="w-4 h-4 mr-1.5" /><span>{t.settings}</span>
                     </button>
                   </div>
                 </div>
@@ -630,40 +396,49 @@
             </div>
           </header>
 
-          {/* Main Content Area */}
           <main className="flex-1 max-w-7xl mx-auto w-full lg:px-8 lg:py-6 overflow-hidden relative">
             <div className="flex flex-col lg:flex-row gap-0 lg:gap-6 h-full absolute inset-0 lg:static">
               
-              {/* Left Column: News Feed */}
+              {/* Left Column: Live News Feed */}
               <div className={`w-full lg:w-1/3 flex-col h-full bg-slate-50 lg:bg-transparent p-4 lg:p-0 ${selectedArticle ? 'hidden lg:flex' : 'flex'}`}>
                 <div className="flex items-center justify-between mb-3 lg:mb-4 flex-none">
                   <h2 className="text-lg font-semibold text-slate-700 flex items-center">
-                    <Newspaper className="w-5 h-5 mr-2 text-blue-600"/> 
+                    <span className="relative flex h-3 w-3 mr-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
                     {activeCompany.name} {t.news}
                   </h2>
-                  <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{activeCompany.id}</span>
+                  <span className="text-xs font-bold bg-red-100 text-red-700 px-2 py-1 rounded-md">{t.live}</span>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto space-y-3 lg:space-y-4 lg:pr-2 custom-scrollbar pb-6 lg:pb-0">
-                  {news.map((article) => (
-                    <div 
-                      key={article.id}
-                      onClick={() => handleSelectArticle(article)}
-                      className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                        selectedArticle?.id === article.id 
-                          ? 'bg-blue-50 border-blue-400 shadow-md ring-1 ring-blue-400 lg:shadow-sm lg:ring-0' 
-                          : 'bg-white border-slate-200 hover:border-blue-300 shadow-sm'
-                      }`}
-                    >
-                      <div className="text-xs font-medium text-slate-500 mb-2">{article.date}</div>
-                      <h3 className={`font-bold leading-snug mb-2 ${selectedArticle?.id === article.id ? 'text-blue-900' : 'text-slate-800'}`}>
-                        {article.title}
-                      </h3>
-                      <p className="text-sm text-slate-600 line-clamp-2">
-                        {article.summary}
-                      </p>
+                  {isLoadingNews ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                      <Loader2 className="w-8 h-8 animate-spin mb-4 text-blue-500" />
+                      <p>Fetching latest worldwide news...</p>
                     </div>
-                  ))}
+                  ) : (
+                    news.map((article) => (
+                      <div 
+                        key={article.id}
+                        onClick={() => handleSelectArticle(article)}
+                        className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                          selectedArticle?.id === article.id 
+                            ? 'bg-blue-50 border-blue-400 shadow-md ring-1 ring-blue-400 lg:shadow-sm lg:ring-0' 
+                            : 'bg-white border-slate-200 hover:border-blue-300 shadow-sm'
+                        }`}
+                      >
+                        <div className="text-xs font-medium text-slate-500 mb-2">{article.date}</div>
+                        <h3 className={`font-bold leading-snug mb-2 ${selectedArticle?.id === article.id ? 'text-blue-900' : 'text-slate-800'}`}>
+                          {article.title}
+                        </h3>
+                        <p className="text-sm text-slate-600 line-clamp-2">
+                          {article.summary}
+                        </p>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -671,19 +446,12 @@
               <div className={`w-full lg:w-2/3 flex-col h-full bg-white lg:rounded-2xl lg:border border-slate-200 shadow-sm overflow-hidden ${!selectedArticle ? 'hidden lg:flex' : 'flex'}`}>
                 {selectedArticle ? (
                   <div className="flex flex-col h-full overflow-y-auto custom-scrollbar relative">
-                    
-                    {/* Mobile Back Button - Sticky Header */}
                     <div className="lg:hidden p-3 border-b border-slate-100 flex items-center bg-white sticky top-0 z-10 shadow-sm">
-                      <button 
-                        onClick={() => setSelectedArticle(null)} 
-                        className="flex items-center text-blue-600 hover:text-blue-800 font-semibold px-2 py-1"
-                      >
-                        <ArrowLeft className="w-5 h-5 mr-2" /> 
-                        {t.backToNews} {activeCompany.name} {t.news}
+                      <button onClick={() => setSelectedArticle(null)} className="flex items-center text-blue-600 hover:text-blue-800 font-semibold px-2 py-1">
+                        <ArrowLeft className="w-5 h-5 mr-2" /> {t.backToNews} {activeCompany.name}
                       </button>
                     </div>
 
-                    {/* Article Content */}
                     <div className="p-5 md:p-8 border-b border-slate-100 bg-slate-50/50">
                       <div className="inline-block px-3 py-1 rounded-full bg-slate-200 text-slate-700 text-xs font-semibold mb-3 md:mb-4">
                         {selectedArticle.date}
@@ -694,78 +462,36 @@
                       <p className="text-slate-700 md:text-lg leading-relaxed text-sm md:text-base">
                         {selectedArticle.summary}
                       </p>
-                      <a href={selectedArticle.url} className="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800 font-medium text-sm md:text-base">
+                      <a href={selectedArticle.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800 font-medium text-sm md:text-base">
                         {t.readFull} <ExternalLink className="w-4 h-4 ml-1" />
                       </a>
 
-                      {/* Expanded Quick Insights Section */}
                       <div className="mt-8 pt-6 border-t border-slate-200">
                         <h4 className="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center">
-                          <Sparkles className="w-4 h-4 mr-2 text-amber-500" />
-                          {t.quickInsights}
+                          <Sparkles className="w-4 h-4 mr-2 text-amber-500" />{t.quickInsights}
                         </h4>
                         
                         <div className="flex flex-wrap gap-2 mb-4">
-                          <button
-                            onClick={() => handleQuickAction('explain')}
-                            disabled={quickInsight.loading}
-                            className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${
-                              quickInsight.type === 'explain' ? 'bg-amber-50 border-amber-300 text-amber-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                            }`}
-                          >
-                            {quickInsight.loading && quickInsight.type === 'explain' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-amber-600" /> : <Cpu className="w-4 h-4 mr-1.5 text-amber-600" />}
-                            {t.explainTech}
+                          <button onClick={() => handleQuickAction('explain')} disabled={quickInsight.loading} className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${quickInsight.type === 'explain' ? 'bg-amber-50 border-amber-300 text-amber-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                            {quickInsight.loading && quickInsight.type === 'explain' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-amber-600" /> : <Cpu className="w-4 h-4 mr-1.5 text-amber-600" />}{t.explainTech}
                           </button>
-                          
-                          <button
-                            onClick={() => handleQuickAction('competitors')}
-                            disabled={quickInsight.loading}
-                            className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${
-                              quickInsight.type === 'competitors' ? 'bg-rose-50 border-rose-300 text-rose-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                            }`}
-                          >
-                            {quickInsight.loading && quickInsight.type === 'competitors' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-rose-600" /> : <Swords className="w-4 h-4 mr-1.5 text-rose-600" />}
-                            {t.competitors}
+                          <button onClick={() => handleQuickAction('competitors')} disabled={quickInsight.loading} className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${quickInsight.type === 'competitors' ? 'bg-rose-50 border-rose-300 text-rose-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                            {quickInsight.loading && quickInsight.type === 'competitors' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-rose-600" /> : <Swords className="w-4 h-4 mr-1.5 text-rose-600" />}{t.competitors}
                           </button>
-
-                          <button
-                            onClick={() => handleQuickAction('sentiment')}
-                            disabled={quickInsight.loading}
-                            className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${
-                              quickInsight.type === 'sentiment' ? 'bg-indigo-50 border-indigo-300 text-indigo-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                            }`}
-                          >
-                            {quickInsight.loading && quickInsight.type === 'sentiment' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-indigo-600" /> : <BarChart className="w-4 h-4 mr-1.5 text-indigo-600" />}
-                            {t.sentiment}
+                          <button onClick={() => handleQuickAction('sentiment')} disabled={quickInsight.loading} className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${quickInsight.type === 'sentiment' ? 'bg-indigo-50 border-indigo-300 text-indigo-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                            {quickInsight.loading && quickInsight.type === 'sentiment' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-indigo-600" /> : <BarChart className="w-4 h-4 mr-1.5 text-indigo-600" />}{t.sentiment}
                           </button>
-
-                          <button
-                            onClick={() => handleQuickAction('takeaways')}
-                            disabled={quickInsight.loading}
-                            className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${
-                              quickInsight.type === 'takeaways' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                            }`}
-                          >
-                            {quickInsight.loading && quickInsight.type === 'takeaways' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-emerald-600" /> : <ListChecks className="w-4 h-4 mr-1.5 text-emerald-600" />}
-                            {t.takeaways}
+                          <button onClick={() => handleQuickAction('takeaways')} disabled={quickInsight.loading} className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${quickInsight.type === 'takeaways' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                            {quickInsight.loading && quickInsight.type === 'takeaways' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-emerald-600" /> : <ListChecks className="w-4 h-4 mr-1.5 text-emerald-600" />}{t.takeaways}
                           </button>
-
-                          <button
-                            onClick={() => handleQuickAction('risk')}
-                            disabled={quickInsight.loading}
-                            className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${
-                              quickInsight.type === 'risk' ? 'bg-orange-50 border-orange-300 text-orange-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                            }`}
-                          >
-                            {quickInsight.loading && quickInsight.type === 'risk' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-orange-600" /> : <ShieldAlert className="w-4 h-4 mr-1.5 text-orange-600" />}
-                            {t.riskCheck}
+                          <button onClick={() => handleQuickAction('risk')} disabled={quickInsight.loading} className={`flex items-center px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors border ${quickInsight.type === 'risk' ? 'bg-orange-50 border-orange-300 text-orange-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                            {quickInsight.loading && quickInsight.type === 'risk' ? <Loader2 className="w-4 h-4 mr-2 animate-spin text-orange-600" /> : <ShieldAlert className="w-4 h-4 mr-1.5 text-orange-600" />}{t.riskCheck}
                           </button>
                         </div>
 
                         {quickInsight.error && (
                           <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 mb-4 flex items-start">
-                             <AlertCircle className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-                            {quickInsight.error}
+                             <AlertCircle className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />{quickInsight.error}
                           </div>
                         )}
                         
@@ -776,12 +502,7 @@
                               const parts = line.split(/(\*\*.*?\*\*)/g);
                               return (
                                 <p key={i} className="mb-1">
-                                  {parts.map((part, j) => {
-                                    if (part.startsWith('**') && part.endsWith('**')) {
-                                      return <strong key={j} className="text-slate-900">{part.slice(2, -2)}</strong>;
-                                    }
-                                    return part;
-                                  })}
+                                  {parts.map((part, j) => part.startsWith('**') && part.endsWith('**') ? <strong key={j} className="text-slate-900">{part.slice(2, -2)}</strong> : part)}
                                 </p>
                               );
                             })}
@@ -790,31 +511,20 @@
                       </div>
                     </div>
 
-                    {/* AI Analyst Options Section */}
                     <div className="p-5 md:p-8 flex flex-col bg-slate-50/50 border-t border-slate-200 flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                         <h3 className="text-lg md:text-xl font-bold text-slate-800 flex items-center">
-                          <BrainCircuit className="w-5 h-5 md:w-6 md:h-6 mr-2 text-purple-600" />
-                          {t.optionsAnalysis}
+                          <BrainCircuit className="w-5 h-5 md:w-6 md:h-6 mr-2 text-purple-600" />{t.optionsAnalysis}
                         </h3>
-                        <button
-                          onClick={getAiSuggestion}
-                          disabled={isLoadingAi}
-                          className="bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-lg text-sm md:text-base font-medium flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto"
-                        >
-                          {isLoadingAi ? (
-                            <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-spin" />
-                          ) : (
-                            <TrendingUp className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-                          )}
+                        <button onClick={getAiSuggestion} disabled={isLoadingAi} className="bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-lg text-sm md:text-base font-medium flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto">
+                          {isLoadingAi ? <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-spin" /> : <TrendingUp className="w-4 h-4 md:w-5 md:h-5 mr-2" />}
                           {isLoadingAi ? t.analyzing : t.analyzeOptions}
                         </button>
                       </div>
 
                       {aiError && (
                         <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-start mb-6">
-                          <AlertCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-                          <div className="text-sm">{aiError}</div>
+                          <AlertCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" /><div className="text-sm">{aiError}</div>
                         </div>
                       )}
 
@@ -825,12 +535,7 @@
                             const parts = line.split(/(\*\*.*?\*\*)/g);
                             return (
                               <p key={i} className="mb-2">
-                                {parts.map((part, j) => {
-                                  if (part.startsWith('**') && part.endsWith('**')) {
-                                    return <strong key={j} className="text-slate-900">{part.slice(2, -2)}</strong>;
-                                  }
-                                  return part;
-                                })}
+                                {parts.map((part, j) => part.startsWith('**') && part.endsWith('**') ? <strong key={j} className="text-slate-900">{part.slice(2, -2)}</strong> : part)}
                               </p>
                             );
                           })}
@@ -842,14 +547,11 @@
                               <BrainCircuit className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
                             </div>
                             <h4 className="text-base md:text-lg font-semibold text-slate-800 mb-2">{t.readyForAnalysis}</h4>
-                            <p className="text-xs md:text-sm text-slate-500 max-w-sm">
-                              {t.readyDesc} {activeCompany.id}.
-                            </p>
+                            <p className="text-xs md:text-sm text-slate-500 max-w-sm">{t.readyDesc} {activeCompany.id}.</p>
                           </div>
                         )
                       )}
                     </div>
-
                   </div>
                 ) : (
                   <div className="flex items-center justify-center h-full text-slate-500">
@@ -863,53 +565,24 @@
             </div>
           </main>
 
-          {/* Settings Modal */}
           {showSettings && (
             <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
                 <div className="p-5 md:p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                   <h3 className="text-lg md:text-xl font-bold flex items-center text-slate-800">
-                    <Key className="w-5 h-5 mr-2 text-slate-500" />
-                    {t.apiConfig}
+                    <Key className="w-5 h-5 mr-2 text-slate-500" />{t.apiConfig}
                   </h3>
-                  <button 
-                    onClick={() => setShowSettings(false)}
-                    className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                  >
-                    ✕
-                  </button>
+                  <button onClick={() => setShowSettings(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-1">✕</button>
                 </div>
                 <form onSubmit={handleSaveKey} className="p-5 md:p-6">
                   <div className="mb-4">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      {t.apiKeyStr}
-                    </label>
-                    <input
-                      type="password"
-                      value={apiKey}
-                      onChange={(e) => setApiKey(e.target.value)}
-                      placeholder="sk-..."
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                      required
-                    />
-                    <p className="text-xs text-slate-500 mt-2">
-                      {t.apiDesc}
-                    </p>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">{t.apiKeyStr}</label>
+                    <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="sk-..." className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" required />
+                    <p className="text-xs text-slate-500 mt-2">{t.apiDesc}</p>
                   </div>
                   <div className="flex justify-end space-x-3 mt-6 md:mt-8">
-                    <button
-                      type="button"
-                      onClick={() => setShowSettings(false)}
-                      className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm md:text-base font-medium transition-colors"
-                    >
-                      {t.cancel}
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm md:text-base font-medium transition-colors"
-                    >
-                      {t.save}
-                    </button>
+                    <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm md:text-base font-medium transition-colors">{t.cancel}</button>
+                    <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm md:text-base font-medium transition-colors">{t.save}</button>
                   </div>
                 </form>
               </div>
@@ -919,9 +592,10 @@
       );
     }
 
-    // --- Render App ---
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
 </body>
 </html>
+
+
